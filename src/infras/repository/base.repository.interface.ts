@@ -8,7 +8,7 @@ export interface IBaseRepository<T> {
 
     findByIds(id: [EntityId]): Promise<T[]>
 
-    store(data: any): Promise<T>
+    create(data: any): Promise<T>
 
     update(id: EntityId, data: any): Promise<T>
 

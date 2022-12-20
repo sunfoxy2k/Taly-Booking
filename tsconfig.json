@@ -20,8 +20,8 @@
     "paths": {
         "@src": ["src"],
         "@src/*": ["src/*"],
-        "@search": ["src/module/search"],
-        "@search/*": ["src/module/search/*"],
+        "@userManagement": ["src/module/user-management"],
+        "@userManagement/*": ["src/module/user-management/*"],
         "@infras": ["src/infras"],
         "@infras/*": ["src/infras/*"],
     }

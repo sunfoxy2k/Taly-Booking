@@ -1,16 +1,15 @@
 import { LoggerService } from '@nestjs/common'
-import { BaseEntity, DeleteResult, Repository, In, Equal, FindOptionsWhere } from 'typeorm'
+import { BaseEntity, DeleteResult, Repository, In, FindOptionsWhere } from 'typeorm'
 import { IBaseRepository } from './base.repository.interface'
 import { EntityId } from 'typeorm/repository/EntityId'
 
-export class BaseRepository<T extends BaseEntity, R extends Repository<T>> implements IBaseRepository<T> {
-    protected readonly repository: R
-    protected readonly logger: LoggerService
+export abstract class BaseRepository<T extends BaseEntity, R extends Repository<T>> implements IBaseRepository<T> {
 
-    constructor(repository: R, logger: LoggerService) {
-        this.repository = repository
-        this.logger = logger
+    constructor(
+        protected readonly repository: R,
+    ) {
     }
+
     findByIds(ids: [EntityId]): Promise<T[]> {
         const where = { id: In(ids) } as FindOptionsWhere<BaseEntity>
         return this.repository.findBy(where)
@@ -23,9 +22,9 @@ export class BaseRepository<T extends BaseEntity, R extends Repository<T>> imple
     findById(id: EntityId): Promise<T> {
         const where = { id: id } as FindOptionsWhere<BaseEntity>
         return this.repository.findOneBy(where)
-      }
+    }
 
-    store(data: any): Promise<T> {
+    create(data: T): Promise<T> {
         return this.repository.save(data)
     }
 
