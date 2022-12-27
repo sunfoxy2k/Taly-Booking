@@ -7,29 +7,46 @@ export class PsychiatristResource extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
         id: EntityId
 
-    @Column()
+    @Column({
+        default: false
+    })
         isCertificateVerified: boolean
 
-    @Column()
+    @Column({
+        default: ''
+    })
         certificateDocument: string
 
-    @Column()
+    @Column({
+        default: true
+    })
         isAvailable: boolean
 
-    @Column()
+    @Column({
+        nullable: true
+    })
         averageRating: number
 
-    @Column()
+    @Column({
+        default: 0
+    })
         totalRating: number
 
-    @Column()
+    @Column({
+        nullable: true
+    })
         lowChangeRate: number
 
-    @Column()
+    @Column({
+        nullable: true
+    })
         highChangeRate: number
 
     @OneToOne(() => User, (user) => user.psychiatristResource)
         user: User
+
+    @Column()
+        field: string
 
     @CreateDateColumn({
         default: 'now()',

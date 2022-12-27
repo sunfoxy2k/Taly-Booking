@@ -90,7 +90,7 @@ export class User extends BaseEntity {
     })
     location: string
 
-    @OneToOne(() => PsychiatristResource)
+    @OneToOne(() => PsychiatristResource, { cascade: true })
     @JoinColumn({
         // name: 'psychiatristResourceId',
     })
@@ -102,13 +102,13 @@ export class User extends BaseEntity {
     })
     patientResource: PatientResource
 
-    @OneToOne(() => UserAccount, {
-        cascade: true,
-    })
-    @JoinColumn({
-        // name: 'userAccountId',
-    })
-    userAccount: UserAccount
+    // @OneToOne(() => UserAccount, {
+    //     cascade: true,
+    // })
+    // @JoinColumn({
+    //     // name: 'userAccountId',
+    // })
+    // userAccount: UserAccount
 
     @CreateDateColumn({
         default: 'now()',
@@ -123,7 +123,6 @@ export class User extends BaseEntity {
     updatedAt: string
 
     @DeleteDateColumn({
-        default: 'now()',
         nullable: true,
     })
     deletedAt: string

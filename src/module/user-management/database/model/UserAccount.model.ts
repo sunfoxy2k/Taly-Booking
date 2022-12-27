@@ -27,8 +27,8 @@ export class UserAccount extends BaseEntity {
     })
     metadata: object[]
 
-    @OneToOne(() => User, (user) => user.userAccount)
-    user: User
+    // @OneToOne(() => User, (user) => user.userAccount)
+    // user: User
 
     @CreateDateColumn({
         default: 'now()',

@@ -3,9 +3,9 @@ import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt'
 
 import { UserManagementController } from './user-management.controller'
-import { LocalStrategy } from './provider/local.strategy'
+// import { LocalStrategy } from './provider/local.strategy'
 import { JwtStrategy } from './provider/jwt.service'
-import { AuthService } from './provider/auth.service'
+// import { AuthService } from './provider/auth.service'
 import { UserRepository } from './database/repository/User.repository'
 import { UserService } from './provider/user.service'
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,8 +30,8 @@ import { PatientResource } from './database/model/PaitentResource.model';
     ],
     controllers: [UserManagementController],
     providers: [
-        AuthService, 
-        LocalStrategy, 
+        // AuthService, 
+        // LocalStrategy, 
         JwtStrategy, 
         UserRepository,
         UserService,

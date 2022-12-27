@@ -7,7 +7,9 @@ export class PatientResource extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: EntityId
 
-    @Column()
+    @Column({
+        default: false
+    })
     isPrivate: boolean
 
     @OneToOne(() => User, (user) => user.patientResource)
