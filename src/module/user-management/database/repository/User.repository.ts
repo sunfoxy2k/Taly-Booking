@@ -2,7 +2,8 @@ import { BaseRepository } from '../../../../infras/repository/base.repository.se
 import { Repository } from 'typeorm'
 import { User } from '../model/User.model'
 import { InjectRepository } from '@nestjs/typeorm'
-import { PsychiatristResource } from '../model/PsychiatristResource.model';
+import { PsychiatristResource } from '../model/PsychiatristResource.model'
+import { SearchDto } from '../../dto/search.dto';
 
 export class UserRepository extends BaseRepository<User, Repository<User>> {
     constructor(
@@ -13,34 +14,53 @@ export class UserRepository extends BaseRepository<User, Repository<User>> {
     }
 
     async findByEmail(email: string): Promise<User> {
-        return this.repository.findOne({ 
+        return this.repository.findOne({
             where: { email: email },
             relations: [
                 'user_account',
                 'psychiatrist_resource',
                 'patient_resource',
             ]
-         })
+        })
     }
 
-    async fullTextSearchPsychiatrist(keyword: string): Promise<User[]> {
+    async fullTextSearchPsychiatrist(input: SearchDto): Promise<User[]> {
         // Create query with full text search PostgresSql feature with user role is psychiatrist
-        const query = this.repository.createQueryBuilder()
+        input.page = input.page || 0
+
+        let query = this.repository.createQueryBuilder()
             .select('user')
             .from(User, 'user')
-            .leftJoinAndSelect(PsychiatristResource, 'psychiatrist_resource', 'user.psychiatristResourceId = psychiatrist_resource.id')
+            .leftJoinAndSelect(PsychiatristResource, 'psychiatrist_resource', 'psychiatrist_resource.id = user.psychiatristResourceId')
             .where('user.role = :role', { role: 'psychiatrist' })
-            .andWhere(`
-                to_tsvector(user.firstName)
-                @@ to_tsquery(:keyword)`,
-                { keyword: keyword }
-            )
+            .offset(input.page * 10)
             .limit(10)
-            // || to_tsvector(user.lastName)
-            // || to_tsvector(user.email)
-            // || to_tsvector(user.profileBio)
-            // || to_tsvector(psychiatrist_resource.field) 
-        
+
+            if (input.field) {
+                query = query.andWhere('psychiatrist_resource.field = :field', { field: input.field })
+            }
+            if (input.location) {
+                query = query.andWhere('user.location = :location', { location: input.location })
+            }
+
+        if (input.keyword && input.keyword.length > 0) {
+            query = query.andWhere(`
+                to_tsvector(user.firstName)
+                @@ plainto_tsquery(:keyword)`,
+                { keyword: input.keyword }
+                )
+                .orWhere(`
+                to_tsvector(user.lastName)
+                @@ plainto_tsquery(:keyword)`,
+                    { keyword: input.keyword }
+                )
+                .orWhere(`
+                to_tsvector(user.profileBio)
+                @@ plainto_tsquery(:keyword)`,
+                    { keyword: input.keyword }
+                )
+        }
+
         console.log({ query: query.getQuery() })
         const result = await query.getMany()
 

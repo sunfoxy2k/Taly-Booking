@@ -1,7 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn, DeleteDateColumn, OneToOne, JoinColumn } from 'typeorm'
 import { PsychiatristResource } from './PsychiatristResource.model'
 import { EntityId } from 'typeorm/repository/EntityId'
-import { PatientResource } from './PaitentResource.model'
+import { PatientResource } from './PatientResource'
 import { UserAccount } from './UserAccount.model'
 
 export enum UserRole {
@@ -102,13 +102,13 @@ export class User extends BaseEntity {
     })
     patientResource: PatientResource
 
-    // @OneToOne(() => UserAccount, {
-    //     cascade: true,
-    // })
-    // @JoinColumn({
-    //     // name: 'userAccountId',
-    // })
-    // userAccount: UserAccount
+    @OneToOne(() => UserAccount, {
+        cascade: true,
+    })
+    @JoinColumn({
+        // name: 'userAccountId',
+    })
+    userAccount: UserAccount
 
     @CreateDateColumn({
         default: 'now()',
